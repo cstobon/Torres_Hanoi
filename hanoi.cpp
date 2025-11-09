@@ -11,7 +11,9 @@
 using namespace std;
 
 //Declaracion rutina hanoi
-void hanoi(int *movimientos, int n, Pila* pila_a, Pila* pila_b, Pila* pila_c, char origen, char auxiliar, char destino);
+void hanoi(int *movimientos, int n, Pila* pila_origen, Pila* pila_auxiliar, Pila* pila_destino, 
+           Pila* pila_a, Pila* pila_b, Pila* pila_c, 
+           char origen, char auxiliar, char destino, int num_discos_total);
 
 void generar_pila_inicial (Pila* pila, int discos [], int size );
 
@@ -34,7 +36,7 @@ int main ( void )
     cout << "\n=== ESTADO INICIAL ===" << endl;
     mostrar_torres(pila_a, pila_b, pila_c, 3);
     
-    hanoi(movimientos, 3, pila_a, pila_b, pila_c, 'A', 'B', 'C');
+    hanoi(movimientos, 3, pila_a, pila_b, pila_c, pila_a, pila_b, pila_c, 'A', 'B', 'C', 3);
 
     cout << "\n=== ESTADO FINAL ===" << endl;
     mostrar_torres(pila_a, pila_b, pila_c, 3);
@@ -49,23 +51,31 @@ int main ( void )
 }
 
 //Definicion rutina hanoi
-void hanoi(int* movimientos, int n, Pila* pila_a, Pila* pila_b, Pila* pila_c, char origen, char auxiliar, char destino){
+void hanoi(int* movimientos, int n, Pila* pila_origen, Pila* pila_auxiliar, Pila* pila_destino, 
+           Pila* pila_a, Pila* pila_b, Pila* pila_c, 
+           char origen, char auxiliar, char destino, int num_discos_total){
     if(n == 1){
-        Nodo* disco = pila_a -> pop ();
-        pila_c -> push ( disco );
+        Nodo* disco = pila_origen -> pop ();
+        pila_destino -> push ( disco );
         (*movimientos)++;
         
         cout << "\nMovimiento " << *movimientos << ": Mover disco de Torre " << origen << " a Torre " << destino << endl;
+        mostrar_torres(pila_a, pila_b, pila_c, num_discos_total);
     } else {
-        hanoi(movimientos, n - 1, pila_a, pila_c, pila_b, origen, destino, auxiliar);
+        hanoi(movimientos, n - 1, pila_origen, pila_destino, pila_auxiliar, 
+              pila_a, pila_b, pila_c, 
+              origen, destino, auxiliar, num_discos_total);
         
-        Nodo* disco = pila_a -> pop ();
-        pila_c -> push ( disco );  
+        Nodo* disco = pila_origen -> pop ();
+        pila_destino -> push ( disco );  
         (*movimientos)++;
         
         cout << "\nMovimiento " << *movimientos << ": Mover disco de Torre " << origen << " a Torre " << destino << endl;
+        mostrar_torres(pila_a, pila_b, pila_c, num_discos_total);
         
-        hanoi(movimientos, n - 1, pila_b, pila_a, pila_c, auxiliar, origen, destino);
+        hanoi(movimientos, n - 1, pila_auxiliar, pila_origen, pila_destino, 
+              pila_a, pila_b, pila_c, 
+              auxiliar, origen, destino, num_discos_total);
     }
 }
 
